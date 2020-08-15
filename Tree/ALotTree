@@ -1,0 +1,124 @@
+import java.util.ArrayList;
+
+/**
+ * @author 王木风
+ * @create 2020-08-12 20:02
+ */
+public class ALotTreeDemo {
+    public static void main(String[] args) {
+        ArrayList<Num3> arrayList = new ArrayList<Num3>();
+        arrayList.add(new Num3(5));
+        arrayList.add(new Num3(4));
+        arrayList.add(new Num3(9));
+        arrayList.add(new Num3(3));
+        arrayList.add(new Num3(7));
+        arrayList.add(new Num3(6));
+        ALotTree aLotTree = new ALotTree();
+        for (Num3 num2 : arrayList) {
+            aLotTree.add(num2);
+        }
+        aLotTree.addToArrayList();
+        aLotTree.show();
+    }
+}
+
+class ALotTree {
+    Num3 head;
+    ArrayList<Num3> arrayList3 = new ArrayList<Num3>();
+
+    //建立正常树
+    public void add(Num3 num) {
+        Num3 counter = head;
+        if (head == null) {
+            head = num;
+        } else {
+            judge(num, counter);
+        }
+    }
+    //add的辅助方法
+    public void judge(Num3 num, Num3 counter) {
+        if (num.i < counter.i && counter.left != null) {
+            counter = counter.left;
+            judge(num, counter);
+        } else if (num.i < counter.i && counter.left == null) {
+            counter.left = num;
+        } else if (num.i > counter.i && counter.right != null) {
+            counter = counter.right;
+            judge(num, counter);
+        } else if (num.i > counter.i && counter.right == null) {
+            counter.right = num;
+        }
+    }
+
+    //把正常树按照从大到小存放到数组中
+    public void addToArrayList() {
+        Num3 couter = head;
+        if (head == null) {
+            System.out.println("addToarrayList有问题");
+        } else {
+            traversal(couter);
+        }
+        traversal();
+        //此处直接调用建立大堆树的方法了，在主函数就不用调用了，省事
+        addLotTree();
+    }
+    //addToArrayList的辅助方法
+    //右根左顺序遍历
+    public void traversal(Num3 num) {
+        if (num.right != null) {
+            traversal(num.right);
+        }
+        arrayList3.add(num);
+        if (num.left != null) {
+            traversal(num.left);
+        }
+
+    }
+
+    public void traversal() {
+        for (int i = 0; i < arrayList3.size(); i++) {
+            arrayList3.get(i).right = null;
+            arrayList3.get(i).left = null;
+        }
+    }
+
+    //建立大堆树
+    public void addLotTree() {
+        for (int j = 0; j <arrayList3.size()/2; j++) {
+            if (2 * j + 1 < arrayList3.size()) {
+                arrayList3.get(j).left = arrayList3.get(2*j + 1);
+            }
+            if (2 * j + 2 < arrayList3.size()) {
+                arrayList3.get(j).right = arrayList3.get(2*j + 2);
+            }
+        }
+    }
+
+    //遍历大堆树
+    public void show() {
+        Num3 counter = arrayList3.get(0);
+        if (counter == null) {
+            System.out.println("大堆树组为空");
+        } else {
+            showDemo(counter);
+        }
+    }
+    //辅助遍历大堆树
+    public void showDemo(Num3 num3) {
+        System.out.println(num3.i);
+        if (num3.left != null) {
+            showDemo(num3.left);
+        }
+        if (num3.right != null) {
+            showDemo(num3.right);
+        }
+    }
+}
+class Num3 {
+    int i;
+    Num3 left;
+    Num3 right;
+    Num3(int i) {
+        this.i = i;
+    }
+}
