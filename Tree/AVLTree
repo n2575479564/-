@@ -1,0 +1,209 @@
+import org.w3c.dom.css.Counter;
+import java.util.ArrayList;
+/**
+ * @author 王木风
+ * @create 2020-08-17 14:18
+ */
+public class AVLTreeDemo {
+    public static void main(String[] args) {
+        ArrayList<Tree> arrayList = new ArrayList<Tree>();
+        arrayList.add(new Tree(108));
+        arrayList.add(new Tree(56));
+        arrayList.add(new Tree(201));
+        arrayList.add(new Tree(45));
+        arrayList.add(new Tree(43));
+        arrayList.add(new Tree(22));
+        arrayList.add(new Tree(50));
+        arrayList.add(new Tree(52));
+        arrayList.add(new Tree(54));
+        arrayList.add(new Tree(53));
+        arrayList.add(new Tree(55));
+        AVLTree avlTree = new AVLTree();
+        for (Tree tree : arrayList) {
+            avlTree.add(tree);
+        }
+        avlTree.avl(avlTree.head);
+        avlTree.show();
+        System.out.println(avlTree.height(avlTree.head));
+        System.out.println(avlTree.leftHeight(avlTree.head));
+        System.out.println(avlTree.rightHeight(avlTree.head));
+    }
+}
+
+class AVLTree {
+    Tree head;
+
+    //添加节点
+    public void add(Tree tree) {
+        Tree counter = head;
+        if (head == null) {
+            head = tree;
+        } else {
+            judge(tree,counter);
+        }
+    }
+    //判断如何添加节点
+    public void judge(Tree tree, Tree counter) {
+        if (tree.anInt < counter.anInt && counter.left != null) {
+            counter = counter.left;
+            judge(tree, counter);
+        } else if (tree.anInt < counter.anInt && counter.left == null) {
+            counter.left = tree;
+        }else if (tree.anInt > counter.anInt && counter.right != null) {
+            counter = counter.right;
+            judge(tree, counter);
+        } else if (tree.anInt > counter.anInt && counter.right == null) {
+            counter.right = tree;
+        }
+    }
+
+//判断左右子树长度
+    public int leftHeight(Tree tree) {
+        if (tree.left == null) {
+            return 0;
+        } else {
+            return height(tree.left);
+        }
+    }
+    public int rightHeight(Tree tree) {
+        if (tree.right == null) {
+            return 0;
+        } else {
+            return height(tree.right);
+        }
+    }
+    public int height(Tree tree) {
+        //利用递归比较结点左右子树长度，并返回最大值
+        return Math.max(tree.left == null ? 0 : height(tree.left), tree.right == null ? 0 : height(tree.right)) + 1;
+    }
+//左旋转（我管向左旋转叫左旋转，因为没听老师定义左旋转）
+    public Tree avlLeft(Tree tree) {
+        Tree avlLeftNewHead = null;
+        //先把tree.right给新节点备用
+        avlLeftNewHead = tree.right;
+        //把该结点的右指针指向右结点的左节点，如果右结点没有左节点则置空
+        if (tree.right.left != null) {
+            tree.right = tree.right.left;
+        } else {
+            tree.right = null;
+        }
+        //新节点的左节点指向老结点
+        avlLeftNewHead.left = tree;
+        //返回新结点
+        return avlLeftNewHead;
+    }
+    //右旋转
+    public Tree avlRight(Tree tree) {//左边多
+        Tree avlRightNewHead = null;
+        //先把tree.left给新节点备用
+        avlRightNewHead = tree.left;
+        //把该结点的左指针指向左结点的右节点，如果左结点没有右节点则置空
+        if (tree.left.right != null) {
+            tree.left = tree.left.right;
+        } else {
+            tree.left = null;
+        }
+        //新节点的右节点指向老结点
+        avlRightNewHead.right = tree;
+        //返回新结点
+        return avlRightNewHead;
+    }
+//比较两子树长度，判断是否需要旋转
+    public boolean judge(Tree tree) {
+        if (Math.abs(rightHeight(tree) - leftHeight(tree)) > 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    Tree newHead;
+//负责判断旋转和调用前面的函数
+    public void avl(Tree tree) {
+        //先把有两字树的结点的父节点传递给newHead备用
+        if (tree.right != null) {
+            if (tree.right.right != null && tree.right.left != null) {
+                newHead = tree;
+            }
+        }
+        if (tree.left != null) {
+            if (tree.left.left != null && tree.left.right != null) {
+                newHead = tree;
+            }
+        }
+        //寻找需要旋转的最小子树
+        if (tree.left != null) {
+            avl(tree.left);
+        }
+        //找到拥有两颗子树的结点
+        if (tree.left != null && tree.right != null) {
+            //判断该结点是否需要旋转
+            if (judge(tree)) {
+                //判断需要左旋转还是右旋转
+                if (leftHeight(tree) > rightHeight(tree)) {
+                    //判断该结点是否插在父节点的左侧
+                    if (newHead.left == tree) {
+                        newHead.left=avlRight(tree);
+                        newHead = null;
+                        avl(head);
+                    } else if (newHead.right == tree) {//判断该结点是否插在父节点的右侧
+                        newHead.right = avlRight(tree);
+                        newHead = null;
+                        avl(head);
+                    } else if (head == tree) {//判断该结点是否是父节点
+                        head = avlRight(tree);
+                    } else {//判断该if语句是否正常
+                        System.out.println("avl+7if");
+                    }
+                } else {//下面语句意思皆与if相反
+                    if (newHead.left == tree) {
+                        newHead.left=avlLeft(tree);
+                        newHead = null;
+                        avl(head);
+                    } else if (newHead.right == tree) {
+                        newHead.right = avlLeft(tree);
+                        newHead = null;
+                        avl(head);
+                    } else if (head == tree) {
+                        head = avlRight(tree);
+                    } else {
+                        System.out.println("avl+7if+else");
+                    }
+                }
+            }
+        }
+        //寻找需要旋转的最小子树
+        if (tree.right != null) {
+            avl(tree.right);
+        }
+    }
+
+
+    public void show() {
+        Tree counter = head;
+        if (head == null) {//判断是否空子树
+            System.out.println("空树");
+        } else {
+            showDemo(counter);
+        }
+    }
+    public void showDemo(Tree tree) {
+        System.out.println(tree.anInt);
+        if (tree.left != null) {//左侧递归
+            showDemo(tree.left);
+        }
+        if (tree.right != null) {//右侧递归
+            showDemo(tree.right);
+        }
+    }
+}
+
+class Tree {
+    Tree left;
+    Tree right;
+    int anInt;
+
+    Tree(int i) {
+        this.anInt = i;
+    }
+}
