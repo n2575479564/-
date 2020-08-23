@@ -1,0 +1,24 @@
+/**
+ * @author 王木风
+ * @create 2020-08-23 12:12
+ * 汉诺塔的移动，使用分治算法
+ */
+public class Hannoitower {
+    public static void main(String[] args) {
+        haniTower(5,'A','B','C');
+    }
+
+    public static void haniTower(int num, char a, char b, char c) {
+        if (num == 1) {
+            System.out.println("从第一个盘：" + a + "->" + c);
+        } else {
+            //n>=2 总把它看作两个盘：最下面是一个，倒数第二个及以上是一个
+            //1、最上面所有盘A->B，移动过程会使用C
+            haniTower(num - 1, a, c, b);
+            //最下面的盘A->C
+            System.out.println("第" + num + "个盘从" + a + "->" + c);
+            //塔的所有盘从b到c，过程用到a
+            haniTower(num - 1, b, a, c);
+        }
+    }
+}
