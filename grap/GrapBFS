@@ -1,0 +1,113 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
+/**
+ * @author 王木风
+ * @create 2020-08-22 8:26
+ */
+public class GrapDemo {
+    private ArrayList<String> vertexList;     //存储顶点
+    private int[][] edges;  //存储图的邻接矩阵
+    private int numOfEdges; //存储边数
+    private boolean[] isVisited;
+
+    public static void main(String[] args) {
+        int n = 5;
+        String Vertexs[] = {"A", "B", "C", "D", "E"};
+        GrapDemo grapDemo = new GrapDemo(n);
+        //循环添加结点
+        for (String Vertexvalue :Vertexs) {
+            grapDemo.inserVertex(Vertexvalue);
+        }
+        //添加边：A-B A-C B-C B-D B-E
+        grapDemo.inserEdge(0,1,1);
+        grapDemo.inserEdge(0,2,1);
+        grapDemo.inserEdge(1,2,1);
+        grapDemo.inserEdge(1,3,1);
+        grapDemo.inserEdge(1,4,1);
+        grapDemo.showGraph();
+
+        System.out.println("深度遍历");
+        grapDemo.dfs(0);
+    }
+
+    GrapDemo(int n) {
+        edges = new int[n][n];
+        vertexList = new ArrayList<String>(n);
+        numOfEdges = 0;
+        isVisited = new boolean[n];
+    }
+    //核心代码
+    public void dfs(int index) {
+        for (int i = 0; i < vertexList.size(); i++) {
+            if (edges[index][i] > 0) {
+                for (int j = 0; j <= i; j++) {
+                    if (!isVisited[j]) {
+                        if (isVisited[index]) {
+                            dfs(i);
+                        } else {
+                            System.out.print(vertexList.get(index)+"->");
+                            isVisited[index] = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (!isVisited[index]) {
+            System.out.print(vertexList.get(index)+"->");
+            isVisited[index] = true;
+        }
+
+    }
+
+    //插入结点
+    public void inserVertex(String vertex) {
+        vertexList.add(vertex);
+    }
+
+    //添加边
+    /*
+    * v1 表示点的下标，既第几个顶点
+    * v2 表示第二个点的下标
+    * weight 1为连接 0为不连
+    */
+    public void inserEdge(int v1, int v2, int weight) {
+        edges[v1][v2] = weight;
+        edges[v2][v1] = weight;
+        numOfEdges++;
+    }
+
+    //返回结点个数
+    public int getNumOfVertx() {
+        return vertexList.size();
+    }
+    //得到边的个数
+    public int getNumOfEdges() {
+        return numOfEdges;
+    }
+
+    //返回结点下标对应数据
+    public String getValueByIndex(int i) {
+        return vertexList.get(i);
+    }
+
+    //返回v1 v2 权值
+    public int getWeight(int v1, int v2) {
+        return edges[v1][v2];
+    }
+
+    //显示图对应的矩阵
+    public void showGraph() {
+        for (int[] ints :edges) {
+            System.err.println(Arrays.toString(ints));
+        }
+    }
+
+    //深度优先遍历
+    public void depthShow() {
+        depthShowDemo(vertexList.get(1));
+    }
+    public void depthShowDemo(String s) {
+
+    }
+}
