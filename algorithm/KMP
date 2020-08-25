@@ -1,0 +1,55 @@
+import java.net.PortUnreachableException;
+import java.util.Arrays;
+
+/**
+ * @author 王木风
+ * @create 2020-08-23 20:58
+ */
+public class KMP {
+    public static void main(String[] args) {
+        String st1 = "BBC ABCDAB ABCDABCDABDE";
+        String st2 = "ABCDABD";
+
+        System.out.println(kmpSearch(st1,st2,KMPNext(st2)));
+    }
+
+    //获取一个子串的部分匹配值表
+    public static int[] KMPNext(String s) {
+        int[] next = new int[s.length()];
+        next[0] = 0;//如果字符串长度为1，部分匹配值就是0
+        for (int i = 1, j = 0; i < s.length(); i++) {
+            //不相等时,需要从next【j-1】获取新j
+            //直到相等才退出
+            while (j > 0 && s.charAt(i) != s.charAt(j)) {
+                j = next[j - 1];
+            }
+            //相等时部分匹配值+1
+            if (s.charAt(i) == s.charAt(j)) {
+                j++;
+            }
+            next[i] = j;
+        }
+
+        return next;
+    }
+    /*
+    * st1 源字符串
+    * st2 子串
+    * next 部分匹配表
+    * return -1表示没找到，否则返回出现位置
+    */
+    public static int kmpSearch(String st1, String st2, int[] next) {
+        for (int i = 0,j = 0; i < st1.length(); i++) {//i指向st1 j指向st2
+            while (j > 0 && st1.charAt(i) != st2.charAt(j)) {
+                j = next[j - 1];
+            }
+            if (st1.charAt(i) == st2.charAt(j)) {
+                j++;
+            }
+            if (j == st2.length()) {//找到了
+                return i - j + 1;
+            }
+        }
+        return -1;
+    }
+}
