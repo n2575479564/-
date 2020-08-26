@@ -62,36 +62,3 @@ public class PrimAlgorithm {
         }
     }
 }
-/*以下方法是老师教的方法
-//创建最小生成树
-class MinTree {
-    //创建图的邻接矩阵
-    public void createGraph(MGraph mGraph,int verxs,char data[],int[][] weight) {
-        int i, j;
-        for (int k = 0; k < verxs; k++) {//遍历顶点
-            mGraph.data[k] = data[k];
-            for (int l = 0; l < verxs; l++) {
-                mGraph.weight[k][l] = weight[k][l];
-            }
-        }
-    }
-
-    public void showGraph(MGraph graph) {
-        for (int[] ints :graph.weight) {
-            System.out.println(Arrays.toString(ints));
-        }
-
-    }
-}
-
-class MGraph {
-    int verxs;//表示结点个数
-    char[] data;//存放数据
-    int[][] weight;//存放边，就是矩阵
-
-    public MGraph(int verxs) {
-        this.verxs = verxs;
-        data = new char[verxs];
-        weight = new int[verxs][verxs];
-    }
-}*/
