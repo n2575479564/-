@@ -1,0 +1,81 @@
+import java.util.HashMap;
+import java.util.Objects;
+
+/**
+ * @author 王木风
+ * @create 2020-08-27 8:14
+ */
+public class KruskalAlgorithm {
+    public static void main(String[] args) {
+        HashMap<Integer, String> hashMap = new HashMap<>(); //下面这么写纯粹是省地方
+        hashMap.put(0,"A");  hashMap.put(1,"B");
+        hashMap.put(2,"C");  hashMap.put(3,"D");
+        hashMap.put(4,"E");  hashMap.put(5,"F");
+        hashMap.put(6,"G");
+        int verxs = hashMap.size();
+        int[][] onde = new int[verxs][verxs];
+        onde[0][1] = 5;  onde[0][2] = 7;  onde[0][6] = 2;  onde[1][0] = 5;
+        onde[1][3] = 9;  onde[1][6] = 3;  onde[2][0] = 7;  onde[2][4] = 8;
+        onde[3][1] = 9;  onde[3][5] = 4;  onde[4][2] = 8;  onde[4][5] = 5;
+        onde[4][6] = 4;  onde[5][3] = 4;  onde[5][4] = 5;  onde[5][6] = 6;
+        onde[6][0] = 2;  onde[6][1] = 3;  onde[6][4] = 4;  onde[6][5] = 6;
+        Kruskal(onde,hashMap);
+    }
+    //核心算法
+    public static void Kruskal(int[][] onde,HashMap<Integer,String> hashMap) {
+        int[][] newOnde = new int[hashMap.size()][hashMap.size()];//新二维数组，存放新图通路的
+        HashMap<Integer, Integer> integerIntegerHashMap = new HashMap<Integer, Integer>();//存放每个点对应的终点
+        integerIntegerHashMap.put(0, 0);  integerIntegerHashMap.put(4, 4);
+        integerIntegerHashMap.put(1, 1);  integerIntegerHashMap.put(5, 5);
+        integerIntegerHashMap.put(2, 2);  integerIntegerHashMap.put(6, 6);
+        integerIntegerHashMap.put(3, 3);
+        int ondeAdd = 1; //处理了几个顶点
+        while (ondeAdd <= 6) {
+            int min = 100;
+            int left = 0;
+            int right = 0;
+            for (int i = 0; i < hashMap.size(); i++) {
+                for (int j = 0; j < hashMap.size(); j++) {
+                    if (onde[i][j] < min && onde[i][j] > 0 && integerIntegerHashMap.get(i).intValue()!=integerIntegerHashMap.get(j).intValue()) {//判断此路可通，并且i的终点和j的终点不相同
+                        min = onde[i][j];
+                        left = i;
+                        right = j;
+                    }
+                }
+            }
+            adjustment(integerIntegerHashMap,left,right);//处理结点对应的终点
+            newOnde[left][right] = onde[left][right];//确定好的通路复制到新二维数组
+            newOnde[right][left] = onde[right][left];
+            ondeAdd++;
+        }
+        for (int[] ints : newOnde) {
+            for (int i :ints) {
+                System.out.print(i+" ");
+            }
+            System.out.println();
+        }
+        System.out.println("------------------------------");
+        for (Integer key :integerIntegerHashMap.keySet()) {
+            System.out.println(key+"->"+integerIntegerHashMap.get(key));
+        }
+    }
+
+    public static void adjustment(HashMap<Integer,Integer> intergerHashMap,int left,int right) {
+        int newLeft = intergerHashMap.get(left);//防止该点线路连接多个顶点
+        if (intergerHashMap.get(left) < right) {//如果left对应的终点比right小
+            intergerHashMap.put(left,right);
+            if (newLeft < right) {//如果该left点线路连接多个点
+                adjustment(intergerHashMap,newLeft,right);
+            }
+        }
+        if (intergerHashMap.get(right) < intergerHashMap.get(left)) {//如果left对应的点大于right
+            intergerHashMap.put(right, intergerHashMap.get(left));
+            for (Integer key : intergerHashMap.keySet()) {//所有终点为right的点改为left
+                if (intergerHashMap.get(key) == right) {
+                    intergerHashMap.put(key, intergerHashMap.get(left));
+                }
+            }
+
+        }
+    }
+}
