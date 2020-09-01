@@ -1,0 +1,68 @@
+import java.util.ArrayList;
+
+/**
+ * @author 王木风
+ * @create 2020-08-30 12:19
+ */
+public class HorseChessboard {
+    //计数器
+    static int step = 1;
+    public static void main(String[] args) {
+        int[][] checkerBoard = new int[8][8];
+        coreMethod(checkerBoard,0,0);
+        //验证
+        for (int[] ints :checkerBoard) {
+            for (int i :ints) {
+                System.out.print(i+"\t");
+            }
+            System.out.println();
+        }
+        System.out.println(step);
+    }
+
+    public static void coreMethod(int[][] checkerBoard,int i,int j) {
+        //记录该点是第几步
+        checkerBoard[i][j] = step;
+        //存放下一步落子位置的x，y
+        ArrayList<int[]> ints = new ArrayList<>();
+        if (i + 2 < 8 && j + 1 < 8 && checkerBoard[i+2][j+1] == 0) {
+            ints.add(new int[]{i+2,j+1});
+        }
+        if (i + 1 < 8 && j + 2 < 8 && checkerBoard[i+1][j+2] == 0) {
+            ints.add(new int[]{i+1,j+2});
+        }
+        if (i - 1 < 8 && j + 2 < 8 && i - 1 >= 0 && checkerBoard[i - 1][j + 2] == 0 ) {
+            ints.add(new int[]{i - 1, j + 2});
+        }
+        if (i - 2 < 8 && j + 1 < 8 && i - 2 >= 0 && checkerBoard[i - 2][j + 1] == 0) {
+            ints.add(new int[]{i - 2, j + 1});
+        }
+        if (i - 2 < 8 && j - 1 < 8 && i - 2 >= 0 && j - 1 >= 0 && checkerBoard[i - 2][j - 1] == 0) {
+            ints.add(new int[]{i - 2, j - 1});
+        }
+        if (i - 1 < 8 && j - 2 < 8 && i - 1 >= 0 && j - 2 >= 0 && checkerBoard[i - 1][j - 2] == 0) {
+            ints.add(new int[]{i - 1, j - 2});
+        }
+        if (i + 1 < 8 && j - 2 < 8 && j - 2 >= 0 && checkerBoard[i + 1][j - 2] == 0) {
+            ints.add(new int[]{i + 1, j - 2});
+        }
+        if (i + 2 < 8 && j - 1 < 8 && j - 1 >= 0 && checkerBoard[i + 2][j - 1] == 0) {
+            ints.add(new int[]{i + 2, j - 1});
+        }
+        //遍历可以落子位置
+        for (int[] arr :ints) {
+            if (step < 64) {
+                step++;
+                //递归
+                coreMethod(checkerBoard, arr[0], arr[1]);
+            }
+        }
+        if (step == 64) {
+            return;
+        } else {
+            //如果无位置可落，则计数器退1.该点置零
+            step--;
+            checkerBoard[i][j] = 0;
+        }
+    }
+}
